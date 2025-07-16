@@ -18,6 +18,9 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { User, Session } from '@supabase/supabase-js';
+import { CreateClientModal } from "@/components/CreateClientModal";
+import { CreateEquipmentModal } from "@/components/CreateEquipmentModal";
+import { CreateServiceOrderModal } from "@/components/CreateServiceOrderModal";
 
 interface Profile {
   id: string;
@@ -106,17 +109,13 @@ export default function Dashboard() {
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       setProfile(data);
     } catch (error) {
       console.error('Error loading profile:', error);
-      toast({
-        title: "Erro ao carregar perfil",
-        description: "Não foi possível carregar as informações do usuário.",
-        variant: "destructive",
-      });
+      // Não mostra toast de erro, pois o perfil pode estar sendo criado
     }
   };
 
@@ -333,46 +332,22 @@ export default function Dashboard() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer">
+          <Card className="shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="text-center">
-              <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                <Plus className="w-6 h-6 text-primary" />
-              </div>
-              <CardTitle className="text-lg">Nova OS</CardTitle>
+              <CreateServiceOrderModal onServiceOrderCreated={loadServiceOrders} />
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground text-center">
-                Criar uma nova ordem de serviço
-              </p>
-            </CardContent>
           </Card>
 
-          <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer">
+          <Card className="shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="text-center">
-              <div className="mx-auto w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
-                <Users className="w-6 h-6 text-secondary" />
-              </div>
-              <CardTitle className="text-lg">Clientes</CardTitle>
+              <CreateClientModal />
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground text-center">
-                Gerenciar clientes
-              </p>
-            </CardContent>
           </Card>
 
-          <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer">
+          <Card className="shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="text-center">
-              <div className="mx-auto w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
-                <Package className="w-6 h-6 text-accent" />
-              </div>
-              <CardTitle className="text-lg">Equipamentos</CardTitle>
+              <CreateEquipmentModal />
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground text-center">
-                Gerenciar equipamentos
-              </p>
-            </CardContent>
           </Card>
         </div>
 
