@@ -332,6 +332,45 @@ export default function Dashboard() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/service-orders')}>
+            <CardHeader className="text-center">
+              <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <ClipboardList className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-medium">Ordens de Serviço</h3>
+              <p className="text-sm text-muted-foreground">
+                Ver todas as OS
+              </p>
+            </CardHeader>
+          </Card>
+
+          <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/clients')}>
+            <CardHeader className="text-center">
+              <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <Users className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-medium">Clientes</h3>
+              <p className="text-sm text-muted-foreground">
+                Gerenciar clientes
+              </p>
+            </CardHeader>
+          </Card>
+
+          <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/equipments')}>
+            <CardHeader className="text-center">
+              <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <Package className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-medium">Equipamentos</h3>
+              <p className="text-sm text-muted-foreground">
+                Gerenciar equipamentos
+              </p>
+            </CardHeader>
+          </Card>
+        </div>
+
+        {/* Create Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card className="shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="text-center">
               <CreateServiceOrderModal onServiceOrderCreated={loadServiceOrders} />
@@ -340,13 +379,13 @@ export default function Dashboard() {
 
           <Card className="shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="text-center">
-              <CreateClientModal />
+              <CreateClientModal onClientCreated={loadServiceOrders} />
             </CardHeader>
           </Card>
 
           <Card className="shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="text-center">
-              <CreateEquipmentModal />
+              <CreateEquipmentModal onEquipmentCreated={loadServiceOrders} />
             </CardHeader>
           </Card>
         </div>

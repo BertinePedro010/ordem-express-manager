@@ -78,15 +78,20 @@ export function CreateServiceOrderModal({ onServiceOrderCreated }: CreateService
       if (equipmentsError) throw equipmentsError;
       setEquipments(equipmentsData || []);
 
-      // Carregar técnicos
-      const { data: techniciansData, error: techniciansError } = await supabase
+      // Carregar perfil do usuário atual como técnico
+      const { data: currentProfile, error: profileError } = await supabase
         .from('profiles')
         .select('id, name, user_type')
-        .eq('user_type', 'tecnico')
-        .order('name');
+        .eq('user_id', user.id)
+        .single();
 
-      if (techniciansError) throw techniciansError;
-      setTechnicians(techniciansData || []);
+      if (profileError) throw profileError;
+      setTechnicians(currentProfile ? [currentProfile] : []);
+      
+      // Auto-selecionar o técnico atual
+      if (currentProfile && !formData.technician_id) {
+        setFormData(prev => ({ ...prev, technician_id: currentProfile.id }));
+      }
     } catch (error) {
       console.error('Error loading data:', error);
     }

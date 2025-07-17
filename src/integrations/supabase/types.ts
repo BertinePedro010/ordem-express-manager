@@ -217,6 +217,13 @@ export type Database = {
             referencedRelation: "equipments"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "service_orders_technician_id_fkey"
+            columns: ["technician_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       signatures: {
