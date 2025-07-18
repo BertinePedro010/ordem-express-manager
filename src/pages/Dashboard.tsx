@@ -14,7 +14,8 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
-  Package
+  Package,
+  UserCog
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { User, Session } from '@supabase/supabase-js';
@@ -368,6 +369,23 @@ export default function Dashboard() {
             </CardHeader>
           </Card>
         </div>
+
+        {/* Technicians Management - Only for admins */}
+        {profile?.user_type === 'admin' && (
+          <div className="grid grid-cols-1 gap-6 mb-8">
+            <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/technicians')}>
+              <CardHeader className="text-center">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                  <UserCog className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-lg font-medium">Gerenciar Técnicos</h3>
+                <p className="text-sm text-muted-foreground">
+                  Cadastrar e gerenciar técnicos do sistema
+                </p>
+              </CardHeader>
+            </Card>
+          </div>
+        )}
 
         {/* Create Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

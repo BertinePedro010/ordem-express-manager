@@ -132,32 +132,49 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          created_by: string | null
           id: string
           name: string
           phone: string | null
+          position: string | null
+          status: string | null
           updated_at: string
           user_id: string
           user_type: Database["public"]["Enums"]["user_type"]
         }
         Insert: {
           created_at?: string
+          created_by?: string | null
           id?: string
           name: string
           phone?: string | null
+          position?: string | null
+          status?: string | null
           updated_at?: string
           user_id: string
           user_type?: Database["public"]["Enums"]["user_type"]
         }
         Update: {
           created_at?: string
+          created_by?: string | null
           id?: string
           name?: string
           phone?: string | null
+          position?: string | null
+          status?: string | null
           updated_at?: string
           user_id?: string
           user_type?: Database["public"]["Enums"]["user_type"]
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       service_orders: {
         Row: {
