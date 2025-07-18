@@ -277,7 +277,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: { user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       os_status: "em_andamento" | "aguardando_peca" | "finalizado" | "entregue"

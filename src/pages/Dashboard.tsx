@@ -209,6 +209,31 @@ export default function Dashboard() {
     }
   };
 
+  const handleFinishOrder = async (orderId: string) => {
+    try {
+      const { error } = await supabase
+        .from('service_orders')
+        .update({ status: 'finalizado' })
+        .eq('id', orderId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Sucesso",
+        description: "Ordem de serviço finalizada com sucesso.",
+      });
+
+      loadServiceOrders(); // Recarrega a lista
+    } catch (error) {
+      console.error('Error finishing order:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível finalizar a ordem de serviço.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'em_andamento':
@@ -457,6 +482,18 @@ export default function Dashboard() {
                         {getStatusBadge(order.status)}
                         {getPaymentBadge(order.payment_status)}
                       </div>
+                      {(order.status === 'em_andamento' || order.status === 'aguardando_peca') && (
+                        <Button
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleFinishOrder(order.id);
+                          }}
+                        >
+                          <CheckCircle className="w-4 h-4 mr-1" />
+                          Finalizar
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ))}
