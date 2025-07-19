@@ -196,8 +196,12 @@ export default function Dashboard() {
       .filter(order => order.payment_status === 'pago')
       .reduce((total, order) => total + (order.value || 0), 0);
 
-    // Calcular faturamento total das OS finalizadas
+    // Calcular faturamento total das OS finalizadas (incluindo pendentes)
     const totalRevenue = orders
+      .filter(order => order.status === 'finalizado')
+      .reduce((total, order) => total + (order.value || 0), 0);
+
+    const paidRevenue = orders
       .filter(order => order.status === 'finalizado' && order.payment_status === 'pago')
       .reduce((total, order) => total + (order.value || 0), 0);
 
@@ -378,7 +382,7 @@ export default function Dashboard() {
                 R$ {stats.totalRevenue.toFixed(2)}
               </div>
               <p className="text-xs text-muted-foreground">
-                OS finalizadas pagas
+                OS finalizadas (todos status)
               </p>
             </CardContent>
           </Card>
