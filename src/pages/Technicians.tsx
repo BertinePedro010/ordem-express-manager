@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Edit, Trash2, Key } from "lucide-react";
+import { Plus, Edit, Trash2, Key, ArrowLeft } from "lucide-react";
 import { CreateTechnicianModal } from "@/components/CreateTechnicianModal";
 import { EditTechnicianModal } from "@/components/EditTechnicianModal";
 import { ResetPasswordModal } from "@/components/ResetPasswordModal";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface Technician {
   id: string;
@@ -30,6 +31,7 @@ export default function Technicians() {
   const [selectedTechnician, setSelectedTechnician] = useState<Technician | null>(null);
   const [currentUserType, setCurrentUserType] = useState<string>("");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const fetchTechnicians = async () => {
     try {
@@ -150,9 +152,19 @@ export default function Technicians() {
   return (
     <div className="container mx-auto py-6">
       <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">Gerenciar Técnicos</h1>
-          <p className="text-muted-foreground">Cadastre e gerencie técnicos do sistema</p>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            onClick={() => navigate("/dashboard")}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Voltar ao Dashboard
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">Gerenciar Técnicos</h1>
+            <p className="text-muted-foreground">Cadastre e gerencie técnicos do sistema</p>
+          </div>
         </div>
         <Button onClick={() => setIsCreateModalOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
