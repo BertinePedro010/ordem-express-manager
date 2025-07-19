@@ -123,6 +123,8 @@ export default function Dashboard() {
         .maybeSingle();
 
       if (error) throw error;
+      console.log('Profile loaded:', data);
+      console.log('User type:', data?.user_type);
       setProfile(data);
     } catch (error) {
       console.error('Error loading profile:', error);
