@@ -46,8 +46,17 @@ interface ServiceOrder {
   };
 }
 
+interface ServiceOrderForStats {
+  id: string;
+  status: string;
+  payment_status: string;
+  value?: number;
+  created_at: string;
+}
+
 interface Stats {
   totalOrders: number;
+  totalRevenue: number;
   openOrders: number;
   completedOrders: number;
   pendingPayments: number;
@@ -61,6 +70,7 @@ export default function Dashboard() {
   const [serviceOrders, setServiceOrders] = useState<ServiceOrder[]>([]);
   const [stats, setStats] = useState<Stats>({
     totalOrders: 0,
+    totalRevenue: 0,
     openOrders: 0,
     completedOrders: 0,
     pendingPayments: 0,
@@ -124,6 +134,10 @@ export default function Dashboard() {
     try {
       setIsLoading(true);
       
+      // Filtrar OS finalizadas há mais de 24 horas no dashboard
+      const twentyFourHoursAgo = new Date();
+      twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+      
       const { data, error } = await supabase
         .from('service_orders')
         .select(`
@@ -131,13 +145,21 @@ export default function Dashboard() {
           clients (name),
           equipments (type, brand)
         `)
+        .or(`status.neq.finalizado,and(status.eq.finalizado,updated_at.gte.${twentyFourHoursAgo.toISOString()})`)
         .order('created_at', { ascending: false })
         .limit(10);
 
       if (error) throw error;
       
       setServiceOrders(data || []);
-      calculateStats(data || []);
+      
+      // Carregar todas as OS para calcular estatísticas
+      const { data: allOrders, error: allError } = await supabase
+        .from('service_orders')
+        .select('*');
+      
+      if (allError) throw allError;
+      calculateStats(allOrders || []);
     } catch (error) {
       console.error('Error loading service orders:', error);
       toast({
@@ -150,7 +172,7 @@ export default function Dashboard() {
     }
   };
 
-  const calculateStats = (orders: ServiceOrder[]) => {
+  const calculateStats = (orders: ServiceOrderForStats[]) => {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
 
@@ -174,8 +196,14 @@ export default function Dashboard() {
       .filter(order => order.payment_status === 'pago')
       .reduce((total, order) => total + (order.value || 0), 0);
 
+    // Calcular faturamento total das OS finalizadas
+    const totalRevenue = orders
+      .filter(order => order.status === 'finalizado' && order.payment_status === 'pago')
+      .reduce((total, order) => total + (order.value || 0), 0);
+
     setStats({
       totalOrders,
+      totalRevenue,
       openOrders,
       completedOrders,
       pendingPayments,
@@ -342,15 +370,15 @@ export default function Dashboard() {
 
           <Card className="shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Faturamento</CardTitle>
+              <CardTitle className="text-sm font-medium">Faturamento Total</CardTitle>
               <DollarSign className="w-4 h-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">
-                R$ {stats.monthlyRevenue.toFixed(2)}
+                R$ {stats.totalRevenue.toFixed(2)}
               </div>
               <p className="text-xs text-muted-foreground">
-                Receita do mês
+                OS finalizadas pagas
               </p>
             </CardContent>
           </Card>
