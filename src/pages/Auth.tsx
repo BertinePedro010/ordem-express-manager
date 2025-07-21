@@ -113,22 +113,11 @@ export default function Auth() {
       if (data.user) {
         toast({
           title: "Cadastro realizado com sucesso!",
-          description: "Verifique seu email para confirmar a conta.",
+          description: "Redirecionando para o dashboard...",
         });
         
-        // Create profile after successful signup
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert({
-            user_id: data.user.id,
-            name: formData.name,
-            phone: formData.phone,
-            user_type: formData.userType
-          });
-
-        if (profileError) {
-          console.error('Error creating profile:', profileError);
-        }
+        // Force page reload for clean state
+        window.location.href = '/dashboard';
       }
     } catch (error: any) {
       toast({
